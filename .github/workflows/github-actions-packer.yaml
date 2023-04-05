@@ -5,7 +5,7 @@ name: AWS AMI using Packer Config
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 4 * * *'
+    - cron:  '0 0 1 * *'
 
 jobs:
   packer:
@@ -23,7 +23,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
           # if you have/need it
-          aws-region: us-west-1
+          aws-region: us-west-2
 
       # Initialize Packer templates
       - name: Initialize Packer Template
