@@ -5,7 +5,7 @@ name: AWS AMI using Packer Config
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0 1 * *'
+    - cron:  '40 12 7 * *'
 
 jobs:
   packer:
