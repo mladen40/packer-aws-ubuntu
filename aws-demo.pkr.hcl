@@ -41,11 +41,11 @@ build {
   provisioner "shell" {
 
     inline = [
-      "echo Install - START",
+      "echo Install - START ___",
       "sleep 10",
       "sudo apt-get update",
       "sudo apt-get install -y wget apt-transport-https gnupg2 software-properties-common",
-      "echo Install - SUCCESS",
+      "echo Install - SUCCESS___",
     ]
   }
 }
