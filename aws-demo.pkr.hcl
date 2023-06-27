@@ -31,6 +31,11 @@ source "amazon-ebs" "ubuntu_aws" {
     owners      = ["099720109477"]
   }
   ssh_username = "ubuntu"
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
 }
 
 build {
