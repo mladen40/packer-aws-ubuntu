@@ -3,9 +3,12 @@
 name: AWS AMI using Packer Config
 
 on:
-  schedule:
-    # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0 1 * *'
+  push:
+    branches:
+        - 'master'
+
+  # schedule:
+  #   - cron:  '45 0 7 * *'
 
 jobs:
   packer:
@@ -19,8 +22,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::184984002628:role/packer-role
+          # aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
           aws-region: us-west-2
 
