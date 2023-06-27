@@ -20,9 +20,10 @@ source "amazon-ebs" "ubuntu_aws" {
   ami_name      = "${var.ami_prefix}-${local.timestamp}"
   instance_type = "t2.micro"
   region        = "us-west-2"
+  imds_support  = "v2.0"
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
+      name                = "ubuntu/images/hvm-ssd/ubuntu-kinetic-22.10-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
@@ -30,10 +31,15 @@ source "amazon-ebs" "ubuntu_aws" {
     owners      = ["099720109477"]
   }
   ssh_username = "ubuntu"
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
 }
 
 build {
-  name    = "packer-ubuntu"
+  name = "packer-ubuntu"
   sources = [
     "source.amazon-ebs.ubuntu_aws"
   ]
