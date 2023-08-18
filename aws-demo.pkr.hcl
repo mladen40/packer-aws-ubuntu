@@ -49,8 +49,9 @@ build {
     inline = [
       "echo Install - START ___",
       "sleep 10",
-      "sudo apt-get update && sudo apt upgrade -y",
+      "sudo apt-get update",
       "sudo apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
+      "sudo apt-get upgrade -y",
       "echo Install - SUCCESS___",
     ]
   }
