@@ -52,6 +52,7 @@ build {
       "sudo apt-get update",
       "sudo apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
       "sudo apt-get upgrade -y",
+      "uname -r",
       "echo Install - SUCCESS___",
     ]
   }
