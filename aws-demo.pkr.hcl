@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type    = string
-  default = "packer-aws-ubuntu"
+  default = "packer-aws-ubuntu-20-04"
 }
 
 locals {
@@ -23,7 +23,7 @@ source "amazon-ebs" "ubuntu_aws" {
   imds_support  = "v2.0"
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd/ubuntu-kinetic-22.10-amd64-server-*"
+      name                = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
       root-device-type    = "ebs"
       virtualization-type = "hvm"
     }
