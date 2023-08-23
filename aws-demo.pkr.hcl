@@ -54,6 +54,9 @@ build {
       "sudo apt-get upgrade -y",
       "uname -r",
       "echo Install - SUCCESS___",
+      "sudo ua detach --assume-yes",
+      "sudo rm -rf /var/log/ubuntu-advantage.log",
+      "sudo cloud-init clean --machine-id"
     ]
   }
 }
