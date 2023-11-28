@@ -53,7 +53,7 @@ build {
       "sudo apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
       "sudo apt-get upgrade -y",
       "uname -r",
-      "echo Install - SUCCESS___",
+      "echo Install - SUCCESS ___",
       "sudo ua detach --assume-yes",
       "sudo rm -rf /var/log/ubuntu-advantage.log",
       "sudo cloud-init clean --machine-id"
