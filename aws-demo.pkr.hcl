@@ -57,7 +57,7 @@ build {
       "uname -r",
       "echo Install - SUCCESS ___",
       "sudo rm -rf /var/log/ubuntu-advantage.log",
-      "sudo echo -e "net.core.default_qdisc=fq\nnet.ipv4.tcp_congestion_control=bbr" | sudo tee -a /etc/sysctl.conf,
+      "sudo echo -e 'net.core.default_qdisc=fq\nnet.ipv4.tcp_congestion_control=bbr' | sudo tee -a /etc/sysctl.conf",
       "sudo sysctl -p",
       "sudo cloud-init clean --machine-id"
     ]
