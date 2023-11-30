@@ -47,6 +47,8 @@ build {
   provisioner "shell" {
 
     inline = [
+      "echo set debconf to Noninteractive", 
+      "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
       "echo Install - START ___",
       "sleep 10",
       "sudo apt-get update",
@@ -54,7 +56,6 @@ build {
       "sudo apt-get upgrade -y",
       "uname -r",
       "echo Install - SUCCESS ___",
-      "sudo ua detach --assume-yes",
       "sudo rm -rf /var/log/ubuntu-advantage.log",
       "sudo cloud-init clean --machine-id"
     ]
