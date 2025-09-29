@@ -19,7 +19,7 @@ locals {
 source "amazon-ebs" "ubuntu_aws" {
   ami_name         = "${var.ami_prefix}-${local.timestamp}"
   ami_description  = "Ubuntu 24.04"
-  instance_type    = "t4.micro"
+  instance_type    = "t4g.micro"
   region           = "us-west-2"
   imds_support     = "v2.0"
   source_ami_filter {
