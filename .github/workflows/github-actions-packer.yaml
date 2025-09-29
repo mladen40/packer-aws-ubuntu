@@ -6,6 +6,9 @@ on:
   push:
     branches:
         - 'master'
+env:
+  PRODUCT_VERSION: "latest"
+        
 
   # schedule:
   #   - cron:  '45 0 7 * *'
@@ -17,40 +20,29 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v5.0.0
         with:
-          # role-to-assume: arn:aws:iam::184984002628:role/packer-role
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
           aws-region: us-west-2
 
-      # Initialize Packer template
-      #- name: Initialize Packer Template
-      #  uses: hashicorp/packer-github-actions@master
-      #  with:
-      #    command: init
-
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: ${{ env.PRODUCT_VERSION }}
+          
       - name: Packer Init
-        run: packer init .
-      
-      # Validate template
-      - name: Validate Template
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: validate
-          arguments: -syntax-only
-          target: aws-demo.pkr.hcl
+        id: init
+        run: "packer init ./aws-demo.pkr.hcl"
 
-      # Build artifact
-      - name: Build Artifact
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: build
-          arguments: "-color=false -on-error=abort"
-          target: aws-demo.pkr.hcl
-        env:
-          PACKER_LOG: 1
+      - name: Packer Validate 
+        id: validate
+        run: "packer validate ./aws-demo.pkr.hcl"
+
+      - name: Packer Build 
+        id: build
+        run: "packer build ./aws-demo.pkr.hcl"
