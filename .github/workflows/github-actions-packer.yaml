@@ -29,11 +29,14 @@ jobs:
           aws-region: us-west-2
 
       # Initialize Packer template
-      - name: Initialize Packer Template
-        uses: hashicorp/packer-github-actions@master
-        with:
-          command: init
+      #- name: Initialize Packer Template
+      #  uses: hashicorp/packer-github-actions@master
+      #  with:
+      #    command: init
 
+      - name: Packer Init
+        run: packer init .
+      
       # Validate template
       - name: Validate Template
         uses: hashicorp/packer-github-actions@master
