@@ -1,15 +1,15 @@
 packer {
   required_plugins {
     amazon = {
-      version = ">= 1.3.9"
       source  = "github.com/hashicorp/amazon"
+      version = ">= 1.3.9"
     }
   }
 }
 
 variable "ami_prefix" {
   type    = string
-  default = "ubuntu-24-04"
+  default = "aws-ubuntu-24-04"
 }
 
 locals {
