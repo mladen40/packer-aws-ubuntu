@@ -6,12 +6,12 @@ on:
   push:
     branches:
         - 'master'
+  # schedule:
+  #   - cron:  '45 0 7 * *'
+  
 env:
   PRODUCT_VERSION: "latest"
         
-
-  # schedule:
-  #   - cron:  '45 0 7 * *'
 
 jobs:
   packer:
@@ -29,7 +29,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Setup `packer`
+      - name: Setup Packer
         uses: hashicorp/setup-packer@main
         id: setup
         with:
