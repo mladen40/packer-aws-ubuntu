@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type    = string
-  default = "aws-ubuntu-24-04"
+  default = "ubuntu-24-04"
 }
 
 locals {
