@@ -17,10 +17,11 @@ locals {
 }
 
 source "amazon-ebs" "ubuntu_aws" {
-  ami_name      = "${var.ami_prefix}-${local.timestamp}"
-  instance_type = "t2.micro"
-  region        = "us-west-2"
-  imds_support  = "v2.0"
+  ami_name         = "${var.ami_prefix}-${local.timestamp}"
+  ami_description  = "Ubuntu 24.04"
+  instance_type    = "t2.micro"
+  region           = "us-west-2"
+  imds_support     = "v2.0"
   source_ami_filter {
     filters = {
       name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"
