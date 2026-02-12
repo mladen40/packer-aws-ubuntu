@@ -5,44 +5,51 @@ name: AWS AMI using Packer
 on:
   push:
     branches:
-        - 'master'
+      - master
   # schedule:
-  #   - cron:  '45 0 7 * *'
-  
+  #   - cron: '45 0 7 * *'
+
 env:
-  PRODUCT_VERSION: "latest"
-        
+  PACKER_VERSION: "1.11.0"  # Pin for reproducible builds; use "latest" for newest
+  AWS_REGION: us-west-2
 
 jobs:
   packer:
     runs-on: ubuntu-latest
-    name: packer
+    name: Build AMI
+    permissions:
+      contents: read
+      id-token: write  # Required for OIDC if you switch to OIDC auth later
+
+    outputs:
+      ami_id: ${{ steps.build.outputs.ami_id }}
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5.0.0
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Packer
         uses: hashicorp/setup-packer@main
-        id: setup
         with:
-          version: ${{ env.PRODUCT_VERSION }}
-          
+          version: ${{ env.PACKER_VERSION }}
+
       - name: Packer Init
-        id: init
-        run: "packer init ./aws-demo.pkr.hcl"
+        run: packer init ./aws-demo.pkr.hcl
 
-      - name: Packer Validate 
-        id: validate
-        run: "packer validate ./aws-demo.pkr.hcl"
+      - name: Packer Validate
+        run: packer validate ./aws-demo.pkr.hcl
 
-      - name: Packer Build 
+      - name: Packer Build
         id: build
-        run: "packer build ./aws-demo.pkr.hcl"
+        run: |
+          packer build -machine-readable ./aws-demo.pkr.hcl | tee packer.log
+          ami_id=$(grep 'artifact,0,id' packer.log | cut -d, -f6 | cut -d: -f2)
+          echo "ami_id=$ami_id" >> $GITHUB_OUTPUT
+          echo "Built AMI: $ami_id"

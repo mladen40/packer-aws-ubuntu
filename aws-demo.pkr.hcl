@@ -1,15 +1,28 @@
 packer {
   required_plugins {
     amazon = {
-      version = "= 1.5.0"
+      version = ">= 1.5.0"
       source  = "github.com/hashicorp/amazon"
     }
   }
 }
 
 variable "ami_prefix" {
-  type    = string
-  default = "aws-ubuntu-24-04"
+  type        = string
+  default     = "aws-ubuntu-24-04"
+  description = "Prefix for the AMI name."
+}
+
+variable "aws_region" {
+  type        = string
+  default     = "us-west-2"
+  description = "AWS region to build the AMI in."
+}
+
+variable "instance_type" {
+  type        = string
+  default     = "t4g.micro"
+  description = "EC2 instance type for the build (ARM64 for ubuntu-noble arm64)."
 }
 
 locals {
@@ -17,25 +30,34 @@ locals {
 }
 
 source "amazon-ebs" "ubuntu_aws" {
-  ami_name         = "${var.ami_prefix}-${local.timestamp}"
-  ami_description  = "Ubuntu 24.04"
-  instance_type    = "t4g.micro"
-  region           = "us-west-2"
-  imds_support     = "v2.0"
+  ami_name        = "${var.ami_prefix}-${local.timestamp}"
+  ami_description = "Ubuntu 24.04 (Noble) - ${var.ami_prefix}"
+  instance_type   = var.instance_type
+  region          = var.aws_region
+  imds_support    = "v2.0"
+
   source_ami_filter {
     filters = {
-      name                = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-arm64-server-*"
-      root-device-type    = "ebs"
+      name                 = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-arm64-server-*"
+      root-device-type     = "ebs"
       virtualization-type = "hvm"
     }
     most_recent = true
     owners      = ["099720109477"]
   }
+
   ssh_username = "ubuntu"
+
   metadata_options {
     http_endpoint               = "enabled"
     http_tokens                 = "required"
     http_put_response_hop_limit = 2
+  }
+
+  tags = {
+    Name        = "${var.ami_prefix}-${local.timestamp}"
+    PackerBuild = "true"
+    BaseAMI     = "ubuntu-noble-24.04-arm64"
   }
 }
 
@@ -46,21 +68,19 @@ build {
   ]
 
   provisioner "shell" {
-
     inline = [
-      "echo set debconf to Noninteractive", 
       "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
-      "echo Install - START ___",
-      "sleep 10",
-      "sudo apt-get update",
-      "sudo apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
-      "sudo apt-get upgrade -y",
-      "uname -r",
-      "echo Install - SUCCESS ___",
-      "sudo rm -rf /var/log/ubuntu-advantage.log",
-      "sudo echo -e 'net.core.default_qdisc=fq\nnet.ipv4.tcp_congestion_control=bbr' | sudo tee -a /etc/sysctl.conf",
+      "sudo apt-get update -qq",
+      "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
+      "sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq",
+      "sudo rm -f /var/log/ubuntu-advantage.log",
+      "echo 'net.core.default_qdisc=fq' | sudo tee -a /etc/sysctl.conf",
+      "echo 'net.ipv4.tcp_congestion_control=bbr' | sudo tee -a /etc/sysctl.conf",
       "sudo sysctl -p",
       "sudo cloud-init clean --machine-id"
+    ]
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive"
     ]
   }
 }
