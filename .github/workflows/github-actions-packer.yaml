@@ -10,7 +10,7 @@ on:
   #   - cron: '45 0 7 * *'
 
 env:
-  PACKER_VERSION: "1.11.0"  # Pin for reproducible builds; use "latest" for newest
+  PACKER_VERSION: "latest"  # Pin for reproducible builds; use "latest" for newest
   AWS_REGION: us-west-2
 
 jobs:
