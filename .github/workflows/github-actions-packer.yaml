@@ -49,7 +49,7 @@ jobs:
       - name: Packer Build
         id: build
         run: |
-          packer build -machine-readable ./aws-demo.pkr.hcl | tee packer.log
-          ami_id=$(grep 'artifact,0,id' packer.log | cut -d, -f6 | cut -d: -f2)
+          packer build ./aws-demo.pkr.hcl
+          ami_id=$(jq -r '.builds[0].artifact_id' packer-manifest.json | cut -d: -f2)
           echo "ami_id=$ami_id" >> $GITHUB_OUTPUT
           echo "Built AMI: $ami_id"
