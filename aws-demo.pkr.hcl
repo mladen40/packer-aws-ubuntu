@@ -72,11 +72,12 @@ build {
       "echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections",
       "sudo apt-get update -qq",
       "sudo DEBIAN_FRONTEND=noninteractive apt-get install -y wget apt-transport-https gnupg2 software-properties-common auditd coreutils curl git jq util-linux nfs-common",
-      "sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -qq",
+      "sudo apt-get upgrade -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'",
       "sudo rm -f /var/log/ubuntu-advantage.log",
       "echo 'net.core.default_qdisc=fq' | sudo tee -a /etc/sysctl.conf",
       "echo 'net.ipv4.tcp_congestion_control=bbr' | sudo tee -a /etc/sysctl.conf",
-      "sudo sysctl -p",
+      "sudo sysctl -w net.core.default_qdisc=fq || true",
+      "sudo sysctl -w net.ipv4.tcp_congestion_control=bbr || true",
       "sudo cloud-init clean --machine-id"
     ]
     environment_vars = [
