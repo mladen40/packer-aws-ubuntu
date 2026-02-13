@@ -10,8 +10,7 @@ on:
   #   - cron: '45 0 7 * *'
 
 env:
-  # 1.14.0+ required: Amazon plugin is on releases.hashicorp.com (GitHub releases no longer have SHA256SUMS)
-  PACKER_VERSION: "1.14.0"
+  PACKER_VERSION: "latest"
   AWS_REGION: us-west-2
 
 jobs:
