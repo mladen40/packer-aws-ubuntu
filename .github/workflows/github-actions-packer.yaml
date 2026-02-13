@@ -10,7 +10,7 @@ on:
   #   - cron: '45 0 7 * *'
 
 env:
-  PACKER_VERSION: "latest"  # Pin for reproducible builds; use "latest" for newest
+  PACKER_VERSION: "latest"
   AWS_REGION: us-west-2
 
 jobs:
@@ -49,7 +49,10 @@ jobs:
       - name: Packer Build
         id: build
         run: |
+          set -e
           packer build ./aws-demo.pkr.hcl
-          ami_id=$(jq -r '.builds[0].artifact_id' packer-manifest.json | cut -d: -f2)
-          echo "ami_id=$ami_id" >> $GITHUB_OUTPUT
-          echo "Built AMI: $ami_id"
+          if [ -f packer-manifest.json ]; then
+            ami_id=$(jq -r '.builds[-1].artifact_id | split(":") | .[1]' packer-manifest.json)
+            echo "ami_id=$ami_id" >> $GITHUB_OUTPUT
+            echo "Built AMI: $ami_id"
+          fi
