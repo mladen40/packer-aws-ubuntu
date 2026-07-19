@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type        = string
-  default     = "aws-ubuntu-26-04"
+  default     = "aws-ubuntu-26"
   description = "Prefix for the AMI name."
 }
 
@@ -26,11 +26,11 @@ variable "instance_type" {
 }
 
 locals {
-  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+  build_date = formatdate("MM-DD-YYYY", timestamp())
 }
 
 source "amazon-ebs" "ubuntu_aws" {
-  ami_name        = "${var.ami_prefix}-${local.timestamp}"
+  ami_name        = "${var.ami_prefix}-${local.build_date}"
   ami_description = "Ubuntu 26.04 (Resolute Raccoon) - ${var.ami_prefix}"
   instance_type   = var.instance_type
   region          = var.aws_region
@@ -55,7 +55,7 @@ source "amazon-ebs" "ubuntu_aws" {
   }
 
   tags = {
-    Name        = "${var.ami_prefix}-${local.timestamp}"
+    Name        = "${var.ami_prefix}-${local.build_date}"
     PackerBuild = "true"
     BaseAMI     = "ubuntu-resolute-26.04-arm64"
   }
