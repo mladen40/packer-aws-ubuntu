@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type        = string
-  default     = "aws-ubuntu-24-04"
+  default     = "aws-ubuntu-26-04"
   description = "Prefix for the AMI name."
 }
 
@@ -31,14 +31,14 @@ locals {
 
 source "amazon-ebs" "ubuntu_aws" {
   ami_name        = "${var.ami_prefix}-${local.timestamp}"
-  ami_description = "Ubuntu 24.04 (Noble) - ${var.ami_prefix}"
+  ami_description = "Ubuntu 26.04 (Resolute Raccoon) - ${var.ami_prefix}"
   instance_type   = var.instance_type
   region          = var.aws_region
   imds_support    = "v2.0"
 
   source_ami_filter {
     filters = {
-      name                 = "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-arm64-server-*"
+      name                 = "ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-arm64-server-*"
       root-device-type     = "ebs"
       virtualization-type = "hvm"
     }
@@ -57,7 +57,7 @@ source "amazon-ebs" "ubuntu_aws" {
   tags = {
     Name        = "${var.ami_prefix}-${local.timestamp}"
     PackerBuild = "true"
-    BaseAMI     = "ubuntu-noble-24.04-arm64"
+    BaseAMI     = "ubuntu-resolute-26.04-arm64"
   }
 }
 
