@@ -26,11 +26,12 @@ variable "instance_type" {
 }
 
 locals {
+  timestamp  = regex_replace(timestamp(), "[- TZ:]", "")
   build_date = formatdate("MM-DD-YYYY", timestamp())
 }
 
 source "amazon-ebs" "ubuntu_aws" {
-  ami_name        = "${var.ami_prefix}-${local.build_date}"
+  ami_name        = "${var.ami_prefix}-${local.timestamp}"
   ami_description = "Ubuntu 26.04 (Resolute Raccoon) - ${var.ami_prefix}"
   instance_type   = var.instance_type
   region          = var.aws_region
